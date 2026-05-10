@@ -1,5 +1,5 @@
-import CallingData from "./components/CallingData";
+import Register from "./components/Register";
 
 export default function App() {
-    return <CallingData />
+  return <Register />;
 }
