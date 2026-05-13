@@ -11,5 +11,8 @@ export async function createFile(content) {
 }
 
 export async function updatingFile(userData) {
-  createFile(userData);
+  let data = await readingFile();
+  data = data? JSON.parse(data): [];
+  data.push(JSON.parse(userData));
+  await createFile(JSON.stringify(data));
 }

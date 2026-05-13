@@ -2,6 +2,7 @@ import { useRef } from "react";
 import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
+import { toastNotification } from "./Notifications";
 
 export default function Register() {
   const [users, setUsers] = useState([]);
@@ -13,11 +14,13 @@ export default function Register() {
 
   async function API_Call() {
     const data = await axios.get("http://localhost:3000/");
+    console.log("data", data);
     setUsers(data.data);
   }
 
-  function sendDataToServer() {
-    axios.post("http://localhost:3000/", users);
+  async function sendDataToServer() {
+    const response = await axios.post("http://localhost:3000/", users);
+    toastNotification(response.data)
   }
 
   function resetInputs() {
@@ -33,20 +36,9 @@ export default function Register() {
     const role = roleRef.current.value;
     const email = emailRef.current.value.trim();
     const password = passwordRef.current.value;
-    const cnfrmPassword = cnfrmRef.current.value;
 
-    const findEmail = users.find((user) => user.email === email);
-
-    if (!name || !email || !password || !cnfrmPassword) {
-      console.log("Please fill all input fields");
-    } else if (password !== cnfrmPassword) {
-      console.log("Password is not matching");
-    } else if (findEmail) {
-      console.log("Email already exists");
-    } else {
-      setUsers((prev) => [...prev, { name, email, role, password }]);
-      resetInputs();
-    }
+    setUsers({ name, email, role, password });
+    resetInputs();
   }
 
   function handleEnter(focusRef) {
@@ -57,7 +49,7 @@ export default function Register() {
     "w-full bg-[#0f0e0c] border border-[#2e2a24] rounded-lg px-3 py-2.5 text-sm text-[#f0ebe3] placeholder-[#3a3630] outline-none focus:border-[#e8a045] focus:ring-1 focus:ring-[#e8a045]/20 transition-all";
 
   useEffect(() => {
-    if (users.length > 0) sendDataToServer();
+    sendDataToServer();
   }, [users]);
 
   useEffect(() => {
