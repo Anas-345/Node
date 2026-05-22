@@ -1,5 +1,7 @@
 import { useState } from "react";
 import InputField from "../../components/InputField";
+import axios from "axios";
+import { toastNotification } from "../../functions/Notifications";
 
 export default function Register() {
   const [user, setUser] = useState({
@@ -8,9 +10,38 @@ export default function Register() {
     password: "",
     confirm: "",
   });
+ async function sendRequest(user) {
+    const msg = await axios.post("http://localhost:3000/register", user);
+    toastNotification(msg.data)
+  }
 
   function handleChange(e, content) {
     setUser((prev) => ({ ...prev, [content.toLowerCase()]: e.target.value }));
+  }
+
+  function handleClick() {
+    const { name, email, password, confirm } = user;
+
+    const userName = name.trim();
+    const userEmail = email.trim();
+
+    if (!userName || !userEmail || !password || !confirm) {
+      toastNotification({ content: "Please fill input fields", type: "error" });
+      return;
+    } else if (password !== confirm) {
+      toastNotification({
+        content: "Your passwords are not matching",
+        type: "error",
+      });
+      return;
+    }
+    sendRequest({
+      name,
+      email,
+      password,
+      active: false,
+      createdAt: new Date().getTime(),
+    });
   }
 
   return (
@@ -64,6 +95,7 @@ export default function Register() {
         <button
           className="
           mt-7 w-full h-12 rounded-xl bg-[#e8a045] hover:bg-[#f5b05a] active:bg-[#d4923a] text-[13px] font-bold tracking-wide text-[#0a0908] shadow-lg shadow-[#e8a045]/20 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#e8a045]/40 cursor-pointer"
+          onClick={handleClick}
         >
           Create account
         </button>

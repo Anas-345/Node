@@ -13,6 +13,6 @@ export async function createFile(content) {
 export async function updatingFile(userData) {
   let data = await readingFile();
   data = data? JSON.parse(data): [];
-  data.push(JSON.parse(userData));
+  data.push(userData);
   await createFile(JSON.stringify(data));
 }
