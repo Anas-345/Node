@@ -13,13 +13,14 @@ export default function Login() {
     setUser((prev) => ({ ...prev, [content.toLowerCase()]: e.target.value }));
   }
 
-  function handleClick() {
+  async function handleClick() {
     const { email, password } = user;
     if (!email.trim() || !password) {
       toastNotification({ content: "Please fill input fields", type: "error" });
       return;
     }
-    sendRequest("login", user, "/", navigate);
+    const data = await sendRequest("login", user, "/", navigate)
+    setUser(data)
   }
 
   return (

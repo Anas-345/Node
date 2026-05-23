@@ -7,4 +7,5 @@ export async function sendRequest(endpoint, user, path, navigate) {
   if (msg.data.type === "success") {
     navigate(path);
   }
+  return msg.data?.userFound;
 }

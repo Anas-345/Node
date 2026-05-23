@@ -1,11 +1,17 @@
 import { useNavigate } from "react-router";
 import Button from "../components/Button";
 import { useAuth } from "../context/AuthContext";
+import { sendRequest } from "../functions/sendData";
 
 export default function Home() {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
 
   const navigate = useNavigate();
+
+  function handleClick() {
+    sendRequest("logout", { email: user.email }, "/", navigate);
+    setUser({});
+  }
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center gap-8 px-4">
@@ -25,12 +31,8 @@ export default function Home() {
       </div>
 
       <div className="flex items-center gap-3">
-        {user?.email ? (
-          <Button
-            content="Logout"
-            variant="danger"
-            handleClick={() => console.log("logout")}
-          />
+        {user?.active ? (
+          <Button content="Logout" variant="danger" handleClick={handleClick} />
         ) : (
           <>
             <Button

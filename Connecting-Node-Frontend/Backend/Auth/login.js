@@ -1,4 +1,4 @@
-import { readingFile } from "../fileOperations.js";
+import { readingFile, updatingFile } from "../fileOperations.js";
 
 export function login(res, req) {
   let data = "";
@@ -11,8 +11,13 @@ export function login(res, req) {
         (u) => u.email === data.email && u.password === data.password,
       );
       if (userFound) {
+        updatingFile(userFound, true);
         res.end(
-          JSON.stringify({ content: "Login successfull", type: "success" }),
+          JSON.stringify({
+            content: "Login successfull",
+            type: "success",
+            userFound: { ...userFound, active: true },
+          }),
         );
         return;
       }
