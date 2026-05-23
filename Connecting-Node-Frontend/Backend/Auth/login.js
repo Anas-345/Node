@@ -1,6 +1,7 @@
 import { readingFile, updatingFile } from "../fileOperations.js";
+import { checkPassword, hashPassword } from "./hashPassword.js";
 
-export function login(res, req) {
+export async function login(res, req) {
   let data = "";
   req.on("data", (chunk) => (data += chunk));
   req.on("end", async () => {
@@ -8,18 +9,24 @@ export function login(res, req) {
     const fileData = await readingFile();
     if (fileData) {
       const userFound = JSON.parse(fileData).find(
-        (u) => u.email === data.email && u.password === data.password,
+        (u) => u.email === data.email,
       );
       if (userFound) {
-        updatingFile(userFound, true);
-        res.end(
-          JSON.stringify({
-            content: "Login successfull",
-            type: "success",
-            userFound: { ...userFound, active: true },
-          }),
+        const passwordMatch = await checkPassword(
+          data.password,
+          userFound.password,
         );
-        return;
+        if (passwordMatch) {
+          updatingFile(userFound, true);
+          res.end(
+            JSON.stringify({
+              content: "Login successfull",
+              type: "success",
+              userFound: { ...userFound, active: true },
+            }),
+          );
+          return;
+        }
       }
     }
     res.end(JSON.stringify({ content: "User not found", type: "error" }));

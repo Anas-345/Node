@@ -1,1 +1,9 @@
-[{"name":"1","email":"1","password":"1","active":false,"createdAt":1779540222271},{"name":"2","email":"2","password":"2","active":true,"createdAt":1779547237454}]
+[
+  {
+    "name": "1",
+    "email": "1",
+    "password": "$2b$10$IlPUllGxp.3K0if6NUi1IO4ai5zhH4h0DPVyRNhMRcimOEmi5gy3K",
+    "active": true,
+    "createdAt": 1779551831496
+  }
+]

@@ -1,4 +1,5 @@
 import { readingFile, updatingFile } from "../fileOperations.js";
+import { hashPassword } from "./hashPassword.js";
 
 export function register(res, req) {
   let data = "";
@@ -17,7 +18,8 @@ export function register(res, req) {
         return;
       }
     }
-    updatingFile(data);
+    const password = await hashPassword(data.password);
+    updatingFile({ ...data, password });
     res.end(
       JSON.stringify({
         content: "User registered successfully",
