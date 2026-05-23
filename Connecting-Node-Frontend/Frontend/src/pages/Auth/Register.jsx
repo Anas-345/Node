@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import InputField from "../../components/InputField";
-import axios from "axios";
-import { toastNotification } from "../../functions/Notifications";
+import { toastNotification } from "../../functions/notifications";
+import { sendRequest } from "../../functions/sendData";
 
 export default function Register() {
   const [user, setUser] = useState({
@@ -10,10 +11,8 @@ export default function Register() {
     password: "",
     confirm: "",
   });
- async function sendRequest(user) {
-    const msg = await axios.post("http://localhost:3000/register", user);
-    toastNotification(msg.data)
-  }
+
+  const navigate = useNavigate();
 
   function handleChange(e, content) {
     setUser((prev) => ({ ...prev, [content.toLowerCase()]: e.target.value }));
@@ -35,13 +34,17 @@ export default function Register() {
       });
       return;
     }
-    sendRequest({
-      name,
-      email,
-      password,
-      active: false,
-      createdAt: new Date().getTime(),
-    });
+    sendRequest('register',
+      {
+        name,
+        email,
+        password,
+        active: false,
+        createdAt: new Date().getTime(),
+      },
+      "/auth/login",
+      navigate,
+    );
   }
 
   return (
@@ -102,7 +105,10 @@ export default function Register() {
 
         <p className="mt-5 text-center text-[13px] text-[#4a4540]">
           Already have an account?{" "}
-          <span className="text-[#e8a045] hover:text-[#f5b05a] cursor-pointer transition-colors duration-150 font-medium">
+          <span
+            className="text-[#e8a045] hover:text-[#f5b05a] cursor-pointer transition-colors duration-150 font-medium"
+            onClick={() => navigate("/auth/login")}
+          >
             Sign in
           </span>
         </p>

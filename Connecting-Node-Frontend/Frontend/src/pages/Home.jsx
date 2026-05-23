@@ -1,7 +1,10 @@
 import { useNavigate } from "react-router";
 import Button from "../components/Button";
+import { useAuth } from "../context/AuthContext";
 
 export default function Home() {
+  const { user } = useAuth();
+
   const navigate = useNavigate();
 
   return (
@@ -22,16 +25,26 @@ export default function Home() {
       </div>
 
       <div className="flex items-center gap-3">
-        <Button
-          content="Register"
-          variant="primary"
-          handleClick={() => navigate("/auth/register")}
-        />
-        <Button
-          content="Login"
-          variant="secondary"
-          handleClick={() => navigate("/auth/login")}
-        />
+        {user?.email ? (
+          <Button
+            content="Logout"
+            variant="danger"
+            handleClick={() => console.log("logout")}
+          />
+        ) : (
+          <>
+            <Button
+              content="Register"
+              variant="primary"
+              handleClick={() => navigate("/auth/register")}
+            />
+            <Button
+              content="Login"
+              variant="secondary"
+              handleClick={() => navigate("/auth/login")}
+            />
+          </>
+        )}
       </div>
     </div>
   );
