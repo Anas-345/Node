@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import InputField from "../../components/InputField";
 import { toastNotification } from "../../functions/notifications";
 import { sendRequest } from "../../functions/sendData";
+import emailVerification from "../../functions/emailVerification";
 
 export default function Register() {
   const [user, setUser] = useState({
@@ -27,6 +28,9 @@ export default function Register() {
     if (!userName || !userEmail || !password || !confirm) {
       toastNotification({ content: "Please fill input fields", type: "error" });
       return;
+    } else if (!emailVerification(userEmail)) {
+      toastNotification({ content: "Invalid email", type: "error" });
+      return;
     } else if (password !== confirm) {
       toastNotification({
         content: "Your passwords are not matching",
@@ -34,7 +38,8 @@ export default function Register() {
       });
       return;
     }
-    sendRequest('register',
+    sendRequest(
+      "register",
       {
         name,
         email,

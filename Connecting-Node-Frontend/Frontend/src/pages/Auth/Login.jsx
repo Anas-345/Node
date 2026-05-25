@@ -3,6 +3,7 @@ import InputField from "../../components/InputField";
 import { sendRequest } from "../../functions/sendData";
 import { toastNotification } from "../../functions/notifications";
 import { useAuth } from "../../context/AuthContext";
+import emailVerification from "../../functions/emailVerification";
 
 export default function Login() {
   const { user, setUser } = useAuth();
@@ -15,12 +16,16 @@ export default function Login() {
 
   async function handleClick() {
     const { email, password } = user;
-    if (!email.trim() || !password) {
+    const userEmail = email.trim();
+    if (!userEmail || !password) {
       toastNotification({ content: "Please fill input fields", type: "error" });
       return;
+    } else if (!emailVerification(userEmail)) {
+      toastNotification({ content: "Invalid email", type: "error" });
+      return;
     }
-    const data = await sendRequest("login", user, "/", navigate)
-    setUser(data)
+    const data = await sendRequest("login", user, "/", navigate);
+    setUser(data);
   }
 
   return (
