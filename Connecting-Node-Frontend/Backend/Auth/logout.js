@@ -1,13 +1,16 @@
 import { readingFile, updatingFile } from "../fileOperations.js";
+import { findingUser } from "./findingUser.js";
 
 export function logout(res, req) {
   let data = "";
   req.on("data", (chunk) => (data += chunk));
   req.on("end", async () => {
     data = JSON.parse(data);
-    const fileData = await readingFile();
-    const userFound = JSON.parse(fileData).find((u) => u.email === data.email);
+
+    const userFound = await findingUser(data.email);
+
     updatingFile(userFound, true, false);
+    res.setHeader("Set-Cookie", "token=; HttpOnly; Path=/; Max-Age=0");
     res.end(
       JSON.stringify({
         content: "Logout successfull",

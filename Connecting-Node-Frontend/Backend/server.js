@@ -3,16 +3,20 @@ import { readingFile, updatingFile } from "./fileOperations.js";
 import { register } from "./Auth/register.js";
 import { login } from "./Auth/login.js";
 import { logout } from "./Auth/logout.js";
+import { cookieData } from "./Auth/cookie.js";
 
-const server = http.createServer((req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
+const server = http.createServer(async (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
   try {
-    res.writeHead(200, { "content-type": "application/json" });
+    res.setHeader("content-type", "application/json");
     if (req.method === "POST" && req.url === "/register") register(res, req);
     else if (req.method === "POST" && req.url === "/login") login(res, req);
     else if (req.method === "POST" && req.url === "/logout") logout(res, req);
+    else if (req.method === "GET" && req.url === "/me") cookieData(res, req);
     else {
       res.end(JSON.stringify({ content: "hello" }));
     }
